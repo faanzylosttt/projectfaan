@@ -215,23 +215,22 @@
         });
 
         async function checkPassword(menu) {
-            const userPassword = prompt(menu.promptMessage);
+    const userPassword = prompt(menu.promptMessage);
 
-            if (userPassword === menu.password) {
-                showNotification(menu.successMessage, 'success');
+    if (userPassword === menu.password) {
+        showNotification(menu.successMessage, 'success');
 
-                const username = prompt('Masukkan nama/ID Anda untuk laporan Telegram:') || 'Tanpa Nama';
-                const lokasi = await getLocation();
-                const notifMessage = `✅ Login Berhasil!\nPanel: ${menu.text}\nUser: ${username}\nLokasi: ${lokasi}\nWaktu: ${new Date().toLocaleString()}`;
-                sendTelegramNotification(notifMessage);
+        const lokasi = await getLocation();
+        const notifMessage = `✅ Login Berhasil!\nPanel: ${menu.text}\nLokasi: ${lokasi}\nWaktu: ${new Date().toLocaleString()}`;
+        sendTelegramNotification(notifMessage);
 
-                setTimeout(() => {
-                    window.location.href = menu.url;
-                }, 1500);
-            } else {
-                showNotification(menu.errorMessage, 'error');
-            }
-        }
+        setTimeout(() => {
+            window.location.href = menu.url;
+        }, 1500);
+    } else {
+        showNotification(menu.errorMessage, 'error');
+    }
+}
 
         function showNotification(message, type) {
             const notification = document.createElement('div');
