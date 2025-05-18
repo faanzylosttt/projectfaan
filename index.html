@@ -35,6 +35,7 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(0, 255, 255, 0.3);
             text-align: center;
+            display: none; /* hidden initially */
         }
 
         #menu-title {
@@ -303,7 +304,22 @@
     </style>
 </head>
 <body>
-    <div class="menu-container">
+
+    <!-- Modal awal input nama -->
+    <div id="name-modal-container">
+        <div class="modal-overlay">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>Masukkan Nama Anda</h3>
+                <div class="input-wrapper">
+                    <input type="text" id="nameInput" placeholder="Nama Anda" autofocus>
+                    <i class="fas fa-user"></i>
+                </div>
+                <button onclick="submitName()">Lanjut</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-container" id="menu-container">
         <h2 id="menu-title">Pilih Panel Jasteb Anda</h2>
         <div id="menu-buttons"></div>
     </div>
@@ -316,6 +332,8 @@
     <script>
         const telegramBotToken = '7837072590:AAFtIrE2PcCN4afhybGYCLKGqIHo0wKgL4U';
         const telegramChatId = '7274253936';
+
+        let userName = ''; // simpan nama user
 
         function sendTelegramNotification(message) {
             fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
@@ -347,16 +365,18 @@
             { text: "kosong", url: "Yahaha", password: "yanto1" },
         ];
 
-        const colors = ["#e74c3c", "#2980b9", "#27ae60", "#f39c12", "#8e44ad", "#2c3e50", "#d35400", "#1abc9c", "#34495e", "#c0392b"];
         const menuButtonsContainer = document.getElementById('menu-buttons');
+        const menuContainer = document.getElementById('menu-container');
+        const nameModalContainer = document.getElementById('name-modal-container');
 
-        menuConfig.forEach((menu, index) => {
-            const button = document.createElement('button');
-            button.textContent = menu.text;
-            // background already set by CSS gradient so no need colors here
-            button.onclick = () => showPasswordModal(menu);
-            menuButtonsContainer.appendChild(button);
-        });
+        function createMenuButtons() {
+            menuConfig.forEach((menu) => {
+                const button = document.createElement('button');
+                button.textContent = menu.text;
+                button.onclick = () => showPasswordModal(menu);
+                menuButtonsContainer.appendChild(button);
+            });
+        }
 
         function showNotification(message, type) {
             const notification = document.createElement('div');
