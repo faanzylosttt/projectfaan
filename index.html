@@ -1,126 +1,213 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Panel Jasteb - Login Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Web Menu Panel Jasteb Faanzy</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: url('https://files.catbox.moe/5bpqir.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    .login-container, .menu-container {
-      background: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-      text-align: center;
-    }
+        .menu-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            animation: fadeIn 1s ease;
+        }
 
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      border: none;
-      border-radius: 5px;
-      width: 80%;
-      max-width: 300px;
-    }
+        .menu-container h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
 
-    input {
-      background: #fff;
-      color: #000;
-    }
+        .menu-container button {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00f0ff, #0077ff);
+            transition: all 0.3s ease;
+        }
 
-    button {
-      background: #3498db;
-      color: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
+        .menu-container button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #00f0ff;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+            animation: fadeOut 4s forwards;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
 
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #2ecc71;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 5px;
-      animation: fadeOut 3s forwards;
-    }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-20px); }
-    }
-  </style>
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Login Admin -->
-  <div class="login-container" id="login-container">
-    <h2>Login Admin</h2>
-    <input type="password" id="admin-password" placeholder="Masukkan Password Admin">
-    <button onclick="checkLogin()">Login</button>
-  </div>
-
-  <!-- Menu Utama -->
-  <div class="menu-container hidden" id="menu-container">
-    <h2>Selamat Datang di Panel Jasteb</h2>
-    <p>Hanya admin yang bisa mengakses halaman ini.</p>
-    <button onclick="logout()">Logout</button>
-    <div style="margin-top:20px;">
-      <button onclick="window.location.href='https://example.com/panel1'">Masuk Panel 1</button>
-      <button onclick="window.location.href='https://example.com/panel2'">Masuk Panel 2</button>
+    <div class="menu-container">
+        <h2>Pilih Panel Jasteb Anda</h2>
+        <div id="menu-buttons"></div>
     </div>
-  </div>
 
-  <script>
-    const adminPassword = "rahasiaku123"; // Ganti dengan password Anda
+    <!-- Modal Password -->
+    <div id="modal-container" style="display:none;"></div>
 
-    // Jika sebelumnya sudah login, langsung tampilkan menu
-    if (sessionStorage.getItem("admin_logged_in") === "true") {
-      document.getElementById("login-container").classList.add("hidden");
-      document.getElementById("menu-container").classList.remove("hidden");
-    }
+    <script>
+        const telegramBotToken = 'YOUR_BOT_TOKEN';
+        const telegramChatId = 'YOUR_CHAT_ID';
 
-    function checkLogin() {
-      const input = document.getElementById("admin-password").value;
-      if (input === adminPassword) {
-        sessionStorage.setItem("admin_logged_in", "true");
-        document.getElementById("login-container").classList.add("hidden");
-        document.getElementById("menu-container").classList.remove("hidden");
-        showNotification("Login berhasil!");
-      } else {
-        showNotification("Password salah!");
-      }
-    }
+        const menuConfig = [
+            { text: "PRIBADIFAAN", url: "https://example.com/1", password: "OCTA" },
+            { text: "PT JASTEB 1", url: "https://example.com/2", password: "111" },
+            { text: "ZaanHost", url: "https://example.com/3", password: "zan" },
+            { text: "PRIBADI FAAN", url: "https://example.com/4", password: "faantek" },
+        ];
 
-    function logout() {
-      sessionStorage.removeItem("admin_logged_in");
-      location.reload();
-    }
+        const colors = ["#00c3ff", "#ff0080", "#00ff95", "#ffa600"];
 
-    function showNotification(text) {
-      const notif = document.createElement("div");
-      notif.className = "notification";
-      notif.textContent = text;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-  </script>
+        const container = document.getElementById("menu-buttons");
 
+        menuConfig.forEach((menu, index) => {
+            const btn = document.createElement("button");
+            btn.textContent = menu.text;
+            btn.style.background = colors[index % colors.length];
+            btn.onclick = () => showPasswordModal(menu);
+            container.appendChild(btn);
+        });
+
+        function showNotification(message) {
+            const div = document.createElement("div");
+            div.className = "notification";
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function showPasswordModal(menu) {
+            const modalContainer = document.getElementById("modal-container");
+            modalContainer.innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <h3>${menu.text}</h3>
+                        <input type="password" id="passwordInput" placeholder="Masukkan Password">
+                        <button onclick="checkPassword('${menu.password}', '${menu.url}', '${menu.text}')">Masuk</button>
+                    </div>
+                </div>
+            `;
+            modalContainer.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById("modal-container").style.display = 'none';
+        }
+
+        async function getLocation() {
+            try {
+                const res = await fetch("https://ipapi.co/json/");
+                const data = await res.json();
+                return `${data.city}, ${data.region}, ${data.country_name}`;
+            } catch {
+                return "Lokasi tidak diketahui";
+            }
+        }
+
+        async function checkPassword(correct, url, name) {
+            const input = document.getElementById("passwordInput").value;
+            if (input === correct) {
+                showNotification("Password benar, mengarahkan...");
+                const lokasi = await getLocation();
+                const waktu = new Date().toLocaleString();
+                fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: telegramChatId,
+                        text: `✅ Login Berhasil!\nPanel: ${name}\nLokasi: ${lokasi}\nWaktu: ${waktu}`
+                    })
+                });
+                closeModal();
+                setTimeout(() => window.location.href = url, 1500);
+            } else {
+                showNotification("Password salah! Coba lagi.");
+            }
+        }
+    </script>
 </body>
 </html>
